@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>боль</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <% if (messages.error) { %>
+    <div class="alert alert-danger">
+      <%= messages.error %>
+    </div>
+  <% } %>
+
+  <% if (messages.success) { %>
+    <div class="alert alert-success">
+      <%= messages.success %>
+    </div>
+  <% } %>
+
+  <h1>Welcome to My App</h1>
+  <% if (!user) { %>
+    <p><a href="/users/register">Register</a> or <a href="/users/login">Log in</a></p>
+  <% } else { %>
+    <p>Logged in as <%= user.username %> (<a href="/users/logout">Log out</a>)</p>
+    <p><a href="/publications/new">Create a new publication</a></p>
+  <% } %>
+  <% for (let publication of publications) { %>
+    <div class="publication">
+      <h2><%= publication.title %></h2>
+      <p>Author: <%= publication.author.username %></p>
+      <p>Date: <%= publication.date.toLocaleDateString() %></p>
+      <p><%= publication.content %></p>
+    </div>
+  <% } %>
+</body>
+</html>

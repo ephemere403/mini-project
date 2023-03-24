@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Publications</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <h1>Publications</h1>
+  <% if (success.length > 0) { %>
+    <div class="alert alert-success">
+      <% success.forEach(function(message) { %>
+        <p><%= message %></p>
+      <% }); %>
+    </div>
+  <% } %>
+  <% if (errors.length > 0) { %>
+    <div class="alert alert-danger">
+      <% errors.forEach(function(error) { %>
+        <p><%= error.msg %></p>
+      <% }); %>
+    </div>
+  <% } %>
+  <a href="/publications/new">New Publication</a>
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Date</th>
+    </tr>
+    <% publications.forEach(function(publication) { %>
+      <tr>
+        <td><%= publication.title %></td>
+        <td><%= publication.author.username %></td>
+        <td><%= publication.date.toDateString() %></td>
+      </tr>
+    <% }); %>
+  </table>
+</body>
+</html>
