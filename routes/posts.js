@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
+const path = require('path');
 
 router.post('/', async (req, res) => {
   const post = new Post({
@@ -19,8 +20,7 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const posts = await Post.findAll();
-    res.json(posts);
+    res.sendFile(path.join(__dirname, '../lenta.html'));
   } catch (err) {
     res.json({ message: err });
   }
