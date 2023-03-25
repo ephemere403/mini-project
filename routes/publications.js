@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', ensureAuthenticated, async (req, res) => {
   try {
     const publications = await Publication.find().populate('author');
-    res.render('publications', { publications, errors: req.flash('error'), success: req.flash('success') }); // Pass errors variable to the template
+    res.render('publications', { publications, errors: req.flash('error'), success: req.flash('success') }); // Pass errors variable via flash
   } catch (err) {
     req.flash('error', 'Could not fetch publications');
     res.redirect('/');
