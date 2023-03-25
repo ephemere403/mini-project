@@ -6,3 +6,5 @@ module.exports = {
     res.redirect('/users/login');
   }
 };
+
+//method from passport to ensure authentication throughout routes

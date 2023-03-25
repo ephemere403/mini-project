@@ -1,36 +1,71 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>боль</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
-</head>
-<body>
-  <% if (messages.error) { %>
-    <div class="alert alert-danger">
-      <%= messages.error %>
-    </div>
-  <% } %>
+  <head>
+    <title>My App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/css/bootstrap.min.css">
+    <style>
+      body {
+        background-color: #333;
+        font-family: 'Helvetica', sans-serif;
+        font-weight: 300;
+        background: url('/assets/backgory.gif') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        height: 100%;
+      }
+      .rounded-pill {
+        padding: 10px 50px;
 
-  <% if (messages.success) { %>
-    <div class="alert alert-success">
-      <%= messages.success %>
-    </div>
-  <% } %>
+        border-radius: 10px;
+      }
+      .btn-register {
+        
+        background-color: #8a81a2;
+        border-color: #8a81a2;
+      }
+      .btn-login {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <% if (typeof messages !== 'undefined' && messages.error) { %>
+      <div class="alert alert-danger">
+        <%= messages.error %>
+      </div>
+    <% } %>
 
-  <h1>Welcome to My App</h1>
-  <% if (!user) { %>
-    <p><a href="/users/register">Register</a> or <a href="/users/login">Log in</a></p>
-  <% } else { %>
-    <p>Logged in as <%= user.username %> (<a href="/users/logout">Log out</a>)</p>
-    <p><a href="/publications/new">Create a new publication</a></p>
-  <% } %>
-  <% for (let publication of publications) { %>
-    <div class="publication">
-      <h2><%= publication.title %></h2>
-      <p>Author: <%= publication.author.username %></p>
-      <p>Date: <%= publication.date.toLocaleDateString() %></p>
-      <p><%= publication.content %></p>
-    </div>
-  <% } %>
-</body>
+    <% if (typeof messages !== 'undefined' && messages.success) { %>
+      <div class="alert alert-success">
+        <%= messages.success %>
+      </div>
+    <% } %>
+
+    <h1>Welcome to My App</h1>
+    <% if (!user) { %>
+      <p>
+        <a href="/users/register " class="text-primary btn btn-register btn-primary rounded-pill">Register</a>
+        <a href="/users/login" class="text-primary btn btn-login btn-primary rounded-pill">Log in</a>
+      </p>
+    <% } else { %>
+      <p>Logged in as <%= user.username %> (<a href="/users/logout">Log out</a>)</p>
+      <p><a href="/publications/new">Create a new publication</a></p>
+    <% } %>
+
+    <% for (let publication of publications) { %>
+      <div class="publication">
+        <h2><%= publication.title %></h2>
+        <p>Author: <%= publication.author.username %></p>
+        <p>Date: <%= new Date(publication.date).toLocaleDateString() %></p>
+        <p><%= publication.content %></p>
+      </div>
+    <% } %>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+  </body>
 </html>
