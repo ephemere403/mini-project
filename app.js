@@ -13,6 +13,10 @@ dotenv.config()
 
 const app = express();
 
+// Start the server
+port = parseInt(process.env.PORT, 10) || 3000
+app.listen(port, () => console.log('Server started on port '+port));
+
 // middleware 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -37,9 +41,9 @@ app.use((req, res, next) => {
 });
 
 // db800
-const MongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/mydatabase'
+const MongoURI = process.env.MONGODB_URI || 'mongodb://localhost:'+port+'/mydatabase'
 mongoose.connect(MongoURI, { useNewUrlParser: true })
-  .then(() => console.log('MongoDB connected'))
+  .then(() => console.log('MongoDB connected to ' + MongoURI))
   .catch(err => console.log(err));
 
 // Configure passport
@@ -77,6 +81,3 @@ app.use('/', require('./routes/index'));
 app.use('/publications', require('./routes/publications'));
 app.use('/users', require('./routes/users'));
 
-// Start the server
-port = process.env.PORT || 3000
-app.listen(port, () => console.log('Server started on port 3000'));
