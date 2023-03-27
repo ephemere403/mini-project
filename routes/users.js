@@ -7,15 +7,8 @@ const {authenticateJWT } = require('../config/auth');
 const router = express.Router();
 
 // Function to generate JWT token
-function generateAccessToken(user) {
-  const payload = {
-    id: user._id,
-    username: user.username,
-    email: user.email,
-  };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
-  return token;
-}
+const generateAccessToken = (user, expiresIn) => {
+  return jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn });};
 
 
 router.get('/', async (req, res) => {
@@ -65,13 +58,30 @@ router.post('/login', (req, res, next) => {
       if (err) {
         return next(err);
       }
-      const token = generateAccessToken(user);
-      res.cookie('jwt', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-      console.log("TOKEN:"+token);
+
+      //check if the "remember me" checkbox is checked
+      const rememberMe = req.body.remember_me === 'true';
+      //set the expiration time based on "remember me" is checked
+      if (rememberMe){
+         tokenExpiration = process.env.TOKEN_EXPIRATION_LONG;
+      } else {
+         tokenExpiration = process.env.TOKEN_EXPIRATION_SHORT;
+      }
+      console.log("Token expiration: "+tokenExpiration+" Day");
+      const expiresInDays = parseInt(tokenExpiration);
+      const expiresIn = `${expiresInDays}d`;
+
+      //generate the token with the appropriate expiration time
+      const token = generateAccessToken(user, expiresIn);
+
+      //set the JWT cookie
+      res.cookie('jwt', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', expiresIn });
+      console.log("TOKEN:" + token);
       return res.redirect('/publications');
     });
   })(req, res, next);
 });
+
 
 router.get('/logout', (req, res) => {
   req.logout(function(err) {
