@@ -8,7 +8,6 @@ const dotenv = require('dotenv')
 const User = require('./models/User');
 const flash = require('connect-flash');
 const path = require('path');
-const cookieParser = require('cookie-parser');
 
 dotenv.config()
 
@@ -19,7 +18,6 @@ port = parseInt(process.env.PORT, 10) || 3000
 app.listen(port, () => console.log('Server started on port '+port));
 
 // middleware 
-app.use(cookieParser());
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
