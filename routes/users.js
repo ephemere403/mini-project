@@ -1,9 +1,22 @@
 const express = require('express');
 const passport = require('passport');
 const User = require('../models/user');
-const bcrypt = require('bcryptjs')
-
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const {authenticateJWT } = require('../config/auth');
 const router = express.Router();
+
+// Function to generate JWT token
+function generateAccessToken(user) {
+  const payload = {
+    id: user._id,
+    username: user.username,
+    email: user.email,
+  };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return token;
+}
+
 
 router.get('/', async (req, res) => {
   const users = await User.find();
@@ -17,8 +30,8 @@ router.get('/register', (req, res) => {
 router.post('/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password using bcryptjs
-    const user = new User({ username, email, password: hashedPassword }); // Save the hashed password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ username, email, password: hashedPassword });
 
     await user.save();
     req.flash('success', 'You are now registered and can log in');
@@ -39,11 +52,26 @@ router.get('/login', (req, res) => {
   res.render('login', { errors: req.flash('error') });
 });
 
-router.post('/login', passport.authenticate('local', {
-  successRedirect: '/publications',
-  failureRedirect: '/users/login',
-  failureFlash: true
-}));
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', async (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      req.flash('error', info.message);
+      return res.redirect('/users/login');
+    }
+    req.login(user, async (err) => {
+      if (err) {
+        return next(err);
+      }
+      const token = generateAccessToken(user);
+      res.cookie('jwt', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+      console.log("TOKEN:"+token);
+      return res.redirect('/publications');
+    });
+  })(req, res, next);
+});
 
 router.get('/logout', (req, res) => {
   req.logout(function(err) {
@@ -55,5 +83,5 @@ router.get('/logout', (req, res) => {
   });
 });
 
-
 module.exports = router;
+module.exports.authenticateJWT = authenticateJWT;

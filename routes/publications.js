@@ -1,24 +1,25 @@
 const express = require('express');
 const Publication = require('../models/publication');
-const { ensureAuthenticated } = require('../config/auth');
+const { ensureAuthenticated, authenticateJWT } = require('../config/auth');
+
 
 const router = express.Router();
 
-router.get('/', ensureAuthenticated, async (req, res) => {
+router.get('/', authenticateJWT, async (req, res) => {
   try {
     const publications = await Publication.find().populate('author');
-    res.render('publications', { publications, errors: req.flash('error'), success: req.flash('success') }); // Pass errors variable via flash
+    res.render('publications', { publications, errors: req.flash('error'), success: req.flash('success') });
   } catch (err) {
     req.flash('error', 'Could not fetch publications');
     res.redirect('/');
   }
 });
 
-router.get('/new', ensureAuthenticated, (req, res) => {
+router.get('/new', authenticateJWT, (req, res) => {
   res.render('new_publication', { errors: req.flash('error') });
 });
 
-router.post('/new', ensureAuthenticated, async (req, res) => {
+router.post('/new', authenticateJWT, async (req, res) => {
   const { title, content } = req.body;
   const author = req.user._id;
   const publication = new Publication({ title, author, content });
@@ -32,6 +33,5 @@ router.post('/new', ensureAuthenticated, async (req, res) => {
     res.redirect('/publications/new');
   }
 });
-
 
 module.exports = router;

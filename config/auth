@@ -1,10 +1,32 @@
+const jwt = require('jsonwebtoken');
 module.exports = {
   ensureAuthenticated: function(req, res, next) {
     if (req.isAuthenticated()) {
       return next();
     }
     res.redirect('/users/login');
+  },
+// Middleware to verify JWT token
+ authenticateJWT: function (req, res, next) {
+  console.log('Checking JWT token...');
+  const token = req.cookies.jwt;
+
+  if (!token) {
+    req.flash('error', 'No token provided');
+    return res.redirect('/users/login');
   }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      req.flash('error', 'Failed to authenticate token');
+      return res.redirect('/users/login');
+    }
+    req.user = decoded;
+    next();
+  });
+}
+
+
 };
 
 //method from passport to ensure authentication throughout routes
