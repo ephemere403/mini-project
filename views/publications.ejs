@@ -130,15 +130,13 @@
                       </div>
                     </div>
                     <div class="card-tweet-body">
-                        <%= publication.title %> 
+                      <%= publication.title %>
                         <br></br>
                         <%= publication.content%>
                     </div>
                     <div class="card-tweet-footer d-flex align-items-center">
-                      <div class="card-tweet-actions">
-                        <a href="#" class="card-tweet-action"><i class="far fa-comment"></i> 12</a>
-                        <a href="#" class="card-tweet-action"><i class="fas fa-retweet"></i> 45</a>
-                        <a href="#" class="card-tweet-action"><i class="far fa-heart"></i> 100</a>
+                      <div class="card-tweet-cashvalue">
+                        <%= publication.cash%>
                       </div>
                     </div>
                   </div>
@@ -150,6 +148,40 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- socket to dynamically update pages-->>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src=""></script>
+  <script>
+    function addPublication(publication) {
+      const publicationsContainer = document.querySelector('.col-md-6');
+      const publicationHtml = `
+    <div class="card card-tweet">
+      <div class="card-tweet-header d-flex align-items-center">
+        <img class="card-tweet-avatar" src="https://via.placeholder.com/50" alt="Avatar">
+        <div class="card-tweet-username">${publication.author.username}</div>
+        <div class="card-tweet-time">${new Date(publication.date).toDateString()}</div>
+      </div>
+      <div class="card-tweet-body">
+        ${publication.title}
+        <br></br>
+        ${publication.content}
+      </div>
+      <div class="card-tweet-footer d-flex align-items-center">
+        <div class="card-tweet-cashvalue">${publication.cash}</div>
+      </div>
+    </div>
+  `;
+      publicationsContainer.insertAdjacentHTML('afterbegin', publicationHtml);
+    }
+
+
+    const socket = io();
+    socket.on('new_publication', (publication) => {
+      console.log('updating publication')
+      addPublication(publication);
+    });
+  </script>
+
 </body>
 
 </html>

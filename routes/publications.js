@@ -1,9 +1,16 @@
 const express = require('express');
 const Publication = require('../models/publication');
-const { ensureAuthenticated, authenticateJWT } = require('../config/auth');
-
-
+const {authenticateJWT } = require('../config/auth');
 const router = express.Router();
+
+const getIO = (req, res, next) => {
+  try {
+    req.io = require('../socket').getIO();
+    next();
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 router.get('/', authenticateJWT, async (req, res) => {
   try {
@@ -19,12 +26,13 @@ router.get('/new', authenticateJWT, (req, res) => {
   res.render('new_publication', { errors: req.flash('error') });
 });
 
-router.post('/new', ensureAuthenticated, async (req, res) => {
-  const { title, content } = req.body;
-  const author = req.user._id;
+  router.post('/new', authenticateJWT, getIO, async (req, res) => {
+    const { title, content } = req.body;
+    const author = req.user.id;
   const publication = new Publication({ title, author, content });
   try {
     await publication.save();
+    req.io.emit('new_publication', publication);
     req.flash('success', 'Publication created successfully');
     res.redirect('/publications');
   } catch (err) {
@@ -33,5 +41,6 @@ router.post('/new', ensureAuthenticated, async (req, res) => {
     res.redirect('/publications/new');
   }
 });
+
 
 module.exports = router;

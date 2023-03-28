@@ -1,5 +1,4 @@
 const express = require('express');
-const passport = require('passport');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -45,41 +44,36 @@ router.get('/login', (req, res) => {
   res.render('login', { errors: req.flash('error') });
 });
 
-router.post('/login', (req, res, next) => {
-  passport.authenticate('local', async (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
     if (!user) {
-      req.flash('error', info.message);
+      req.flash('error', 'Email not registered');
       return res.redirect('/users/login');
     }
-    req.login(user, async (err) => {
-      if (err) {
-        return next(err);
-      }
 
-      //check if the "remember me" checkbox is checked
-      const rememberMe = req.body.remember_me === 'true';
-      //set the expiration time based on "remember me" is checked
-      if (rememberMe){
-         tokenExpiration = process.env.TOKEN_EXPIRATION_LONG;
-      } else {
-         tokenExpiration = process.env.TOKEN_EXPIRATION_SHORT;
-      }
-      console.log("Token expiration: "+tokenExpiration+" Day");
-      const expiresInDays = parseInt(tokenExpiration);
-      const expiresIn = `${expiresInDays}d`;
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      req.flash('error', 'Invalid password');
+      return res.redirect('/users/login');
+    }
 
-      //generate the token with the appropriate expiration time
-      const token = generateAccessToken(user, expiresIn);
+    const rememberMe = req.body.remember_me === 'true';
+    const tokenExpiration = rememberMe ? process.env.TOKEN_EXPIRATION_LONG : process.env.TOKEN_EXPIRATION_SHORT;
+    const expiresInDays = parseInt(tokenExpiration);
+    const expiresIn = `${expiresInDays}d`;
 
-      //set the JWT cookie
-      res.cookie('jwt', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', expiresIn });
-      console.log("TOKEN:" + token);
-      return res.redirect('/publications');
-    });
-  })(req, res, next);
+    const token = generateAccessToken(user, expiresIn);
+
+    res.cookie('jwt', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', expiresIn });
+    res.redirect('/publications');
+  } catch (err) {
+    console.log(err);
+    req.flash('error', 'An error occurred during login');
+    res.redirect('/users/login');
+  }
 });
 
 
