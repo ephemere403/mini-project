@@ -19,7 +19,7 @@ router.get('/new', authenticateJWT, (req, res) => {
   res.render('new_publication', { errors: req.flash('error') });
 });
 
-router.post('/new', authenticateJWT, async (req, res) => {
+router.post('/new', ensureAuthenticated, async (req, res) => {
   const { title, content } = req.body;
   const author = req.user._id;
   const publication = new Publication({ title, author, content });
