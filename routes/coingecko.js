@@ -23,5 +23,13 @@ router.get('/', async (req, res) => {
         res.status(500).send('Error fetching data from CoinGecko API');
     }
 });
+router.get('/publications', authenticateJWT, async (req, res) => {
+    try {
+      res.render('publications');
+    } catch (err) {
+      req.flash('error', 'Could not fetch publications page');
+      res.redirect('/');
+    }
+  });
 
 module.exports = router;
