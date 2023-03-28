@@ -68,8 +68,8 @@ router.post('/login', (req, res, next) => {
          tokenExpiration = process.env.TOKEN_EXPIRATION_SHORT;
       }
       console.log("Token expiration: "+tokenExpiration+" Day");
-      const expiresInMinutes = parseInt(tokenExpiration);
-      const expiresIn = `${expiresInMinutes}m`;
+      const expiresInDays = parseInt(tokenExpiration);
+      const expiresIn = `${expiresInDays}d`;
 
       //generate the token with the appropriate expiration time
       const token = generateAccessToken(user, expiresIn);
@@ -84,9 +84,6 @@ router.post('/login', (req, res, next) => {
 
 
 router.get('/logout', (req, res) => {
-  // clear the JWT cookie
-  res.clearCookie('jwt', { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-  
   req.logout(function(err) {
     if (err) {
       console.log(err);
