@@ -1,0 +1,35 @@
+<!-- Define the private calendar page using EJS -->
+<h1>Private Calendar</h1>
+
+<div class="calendar">
+  <% for (var date in transactions) { %>
+    <div class="day">
+      <a href="#" onclick="showTransactions('<%= date %>')">
+        <span class="date"><%= date %></span>
+        <span class="amount"><%= transactions[date].length %> transactions</span>
+        <span class="total"><%= getTotal(transactions[date]) %></span>
+      </a>
+    </div>
+  <% } %>
+</div>
+
+<div id="transactions"></div>
+
+<script>
+  function showTransactions(date) {
+    axios.get('/user/<%= userId %>/account/calendar/' + date)
+      .then(function(response) {
+        var transactions = response.data.transactions;
+        var html = '<h2>Transactions for ' + date + '</h2>';
+        html += '<ul>';
+        transactions.forEach(function(transaction) {
+          html += '<li>' + transaction.title + ' - ' + transaction.content + '</li>';
+        });
+        html += '</ul>';
+        document.getElementById('transactions').innerHTML = html;
+      })
+      .catch(function(error) {
+        console.error(error);
+      });
+  }
+</script>
