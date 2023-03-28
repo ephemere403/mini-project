@@ -85,7 +85,6 @@
 </head>
 
 <body>
-
   <div class="container">
     <h1>Publications</h1>
     <a href="/publications/new" class="btn btn-primary float-right">Post</a>
@@ -117,29 +116,33 @@
                 </div>
               </div>
             </div>
-
-            <div id="publications-container">
-              <div class="row justify-content-center">
-                <div class="col-md-6">
-                  <% publications.forEach(function(publication) { %>
-                    <div class="card card-tweet">
-                      <div class="card-tweet-header d-flex align-items-center">
-                        <img class="card-tweet-avatar" src="https://via.placeholder.com/50" alt="Avatar">
-                        <div class="card-tweet-username">
-                          <%= publication.author.username %>
-                        </div>
-                        <div class="card-tweet-time">
-                          <%= publication.date.toDateString() %>
-                        </div>
+            <div class="row justify-content-center">
+              <div class="col-md-6">
+                <% publications.forEach(function(publication) { %>
+                  <div class="card card-tweet">
+                    <div class="card-tweet-header d-flex align-items-center">
+                      <img class="card-tweet-avatar" src="https://via.placeholder.com/50" alt="Avatar">
+                      <div class="card-tweet-username">
+                        <%= publication.author.username %>
                       </div>
-                      <div class="card-tweet-body">
-                        <%= publication.title %>
-                          <br></br>
-                          <%= publication.content%>
+                      <div class="card-tweet-time">
+                        <%= publication.date.toDateString() %>
                       </div>
                     </div>
-                    <% }); %>
-                </div>
+                    <div class="card-tweet-body">
+                        <%= publication.title %> 
+                        <br></br>
+                        <%= publication.content%>
+                    </div>
+                    <div class="card-tweet-footer d-flex align-items-center">
+                      <div class="card-tweet-actions">
+                        <a href="#" class="card-tweet-action"><i class="far fa-comment"></i> 12</a>
+                        <a href="#" class="card-tweet-action"><i class="fas fa-retweet"></i> 45</a>
+                        <a href="#" class="card-tweet-action"><i class="far fa-heart"></i> 100</a>
+                      </div>
+                    </div>
+                  </div>
+                  <% }); %>
               </div>
             </div>
   </div>
@@ -147,18 +150,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-  <!-- Dynamic updates zavezli -->
-  <script>
-    $(document).ready(function() {
-      //document.ready when ejs page fully loaded to ensure no errors
-      updatePublications();
-  
-      // Call the updatePublications function every 10 seconds
-      setInterval(updatePublications, 10000);
-    });
-  </script>
-  
 </body>
 
 </html>

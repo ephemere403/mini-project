@@ -33,7 +33,6 @@
     </style>
   </head>
   <body>
-
     <% if (typeof messages !== 'undefined' && messages.error) { %>
       <div class="alert alert-danger">
         <%= messages.error %>
@@ -55,6 +54,15 @@
     <% } else { %>
       <p>Logged in as <%= user.username %> (<a href="/users/logout">Log out</a>)</p>
       <p><a href="/publications/new">Create a new publication</a></p>
+    <% } %>
+
+    <% for (let publication of publications) { %>
+      <div class="publication">
+        <h2><%= publication.title %></h2>
+        <p>Author: <%= publication.author.username %></p>
+        <p>Date: <%= new Date(publication.date).toLocaleDateString() %></p>
+        <p><%= publication.content %></p>
+      </div>
     <% } %>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
