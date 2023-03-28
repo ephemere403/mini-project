@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Top 5 Coins</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+
+        h1 {
+            margin-top: 2rem;
+        }
+
+        .card-coin {
+            background-color: #292b2f;
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-coin-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .card-coin-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+
+        .card-coin-symbol {
+            font-size: 1.2rem;
+            color: #9b9b9b;
+            margin-left: 1rem;
+        }
+
+        .card-coin-body {
+            padding: 1.5rem;
+            font-size: 1.2rem;
+            color: #fff;
+            line-height: 1.5;
+        }
+
+        .card-coin-price,
+        .card-coin-market-cap {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Top 5 Coins by Market Cap</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <% coins.forEach(coin => { %>
+                <div class="card card-coin">
+                    <div class="card-coin-header d-flex align-items-center">
+                        <div class="card-coin-name">
+                            <%= coin.name %>
+                        </div>
+                        <div class="card-coin-symbol">
+                            <%= coin.symbol.toUpperCase() %>
+                        </div>
+                    </div>
+                    <div class="card-coin-body">
+                        <p>Price (USD): <span class="card-coin-price"><%= coin.current_price.toFixed(2) %></span></p>
+                        <p>Market Cap: <span class="card-coin-market-cap"><%= coin.market_cap.toLocaleString() %></span>
+                        </p>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

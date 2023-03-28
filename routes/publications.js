@@ -12,6 +12,15 @@ const getIO = (req, res, next) => {
   }
 };
 
+router.get('/coingecko', authenticateJWT, async (req, res) => {
+  try {
+    res.render('coingecko');
+  } catch (err) {
+    req.flash('error', 'Could not fetch coingecko page');
+    res.redirect('/');
+  }
+});
+
 router.get('/', authenticateJWT, async (req, res) => {
   try {
     const publications = await Publication.find().populate('author');

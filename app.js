@@ -49,6 +49,8 @@ app.use('/', require('./routes/index'));
 app.use('/publications', require('./routes/publications'));
 app.use('/users', require('./routes/users'));
 app.use('/account', require('./routes/account'));
+app.use('/coingecko', require('./routes/coingecko'));
+
 
 
 port = parseInt(process.env.PORT, 10) || 3000;

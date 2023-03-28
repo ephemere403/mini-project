@@ -21,5 +21,14 @@ router.get('/logout', (req, res) => {
   });
 });
 
+router.get('/coingecko', authenticateJWT, async (req, res) => {
+  try {
+    res.render('coingecko');
+  } catch (err) {
+    req.flash('error', 'Could not fetch coingecko page');
+    res.redirect('/');
+  }
+});
+
 
 module.exports = router;
